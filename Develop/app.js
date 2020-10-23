@@ -6,12 +6,12 @@ const fs = require("fs");
 //Sets up the Express app
 const app = express();
 const PORT = 3001;
+let notes = require("./db/db.json");
 
 //Sets up the Express app to handle data parsing
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.join());
-
-//Data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("./public"));
 
 //Basic route that sends the user first to the AJAX page
 //GET `/notes` - Should return the `notes.html` file.
@@ -33,11 +33,32 @@ app.get("/api/notes", function (req, res) {
 app.post("/api/notes", function (req, res) {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
-  const newNote = req.body;
+  let newNote = req.body;
+  let arrNote = [];
+  arrNote.concat(
+    fs.readFile("./db/db.json", "utf8", function (err) {
+      if (err) {
+        throw err;
+      }
+    })
+  );
+  arrNote.push(newNote);
+  console.log("arr", arrNote);
+  console.log(newNote);
+  fs.writeFile(
+    path.join(__dirname, "db/db.json"),
+    JSON.stringify(arrNote),
+    function (err) {
+      if (err) {
+        throw err;
+      }
+    }
+  );
+
   // Using a RegEx Pattern to remove spaces from newCharacter
-  newNote.note = newNote.notes.replace(/\s+/g, "").toLowerCase();
+  // newNote.note = newNote.id.replace(/\s+/g, "").toLowerCase();
   //note key word came from index.js line 19: const saveNote = (note) =>
-  notes.push(newNote);
+
   res.json(newNote);
 });
 
