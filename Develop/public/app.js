@@ -5,11 +5,11 @@ const fs = require("fs");
 
 //Sets up the Express app
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 //Sets up the Express app to handle data parsing
-app.use(express.urlencoded({ extended: true }));
-app.use(express.join());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.join());
 
 //Data
 
@@ -35,7 +35,8 @@ app.post("/api/notes", function (req, res) {
   // This works because of our body parsing middleware
   const newNote = req.body;
   // Using a RegEx Pattern to remove spaces from newCharacter
-  newNote.routeName = newNote.noteName.replace(/\s+/g, "").toLowerCase();
+  newNote.note = newNote.notes.replace(/\s+/g, "").toLowerCase();
+  //note key word came from index.js line 19: const saveNote = (note) =>
   notes.push(newNote);
   res.json(newNote);
 });
@@ -52,5 +53,5 @@ app.get("/api/notes/:id", function (req, res) {
 
 //Starts the server to begin listening
 app.listen(PORT, function () {
-  console.log("App listening on PORT" + PORT);
+  console.log("App listening on PORT " + PORT);
 });
