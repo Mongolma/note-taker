@@ -19,11 +19,10 @@ app.get("/notes", function (req, res) {
   return res.sendFile(path.join(__dirname, "notes.html"));
 });
 //GET `*` - Should return the `index.html` file
-app.get("*", function (req, res) {
+app.get("/", function (req, res) {
   return res.sendFile(path.join(__dirname, "index.html"));
 });
 
-//The following API routes should be created:
 //GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON
 app.get("/api/notes", function (req, res) {
   return res.json(notes);
@@ -63,13 +62,22 @@ app.post("/api/notes", function (req, res) {
 });
 
 //DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete. This means you'll need to find a way to give each note a unique `id` when it's saved. In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
-app.get("/api/notes/:id", function (req, res) {
-  const del = req.params.id;
-  for (let i = 0; i < id.length; i++) {
-    if (del === id[i].routeName) {
-      return res.destroy(del);
+app.delete("api/notes/:id", function (req, res) {
+  fs.readFile("/db/db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    const id = req.params.id;
+    const db = data;
+    for (let i = 0; i < db.length; i++) {
+      if (db[i].id === id) {
+        db = db.splice(i, 1);
+        return fs.writeFile("/db/db/json", db, function (err) {
+          if (err) throw err;
+          res.end();
+        });
+      }
     }
-  }
+    res.end();
+  });
 });
 
 //Starts the server to begin listening
