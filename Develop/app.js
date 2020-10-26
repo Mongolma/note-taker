@@ -2,10 +2,9 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-
 //Sets up the Express app
 const app = express();
-const PORT = 3001;
+const PORT = 3003;
 let notes = require("./db/db.json");
 
 //Sets up the Express app to handle data parsing
@@ -20,7 +19,7 @@ app.get("/notes", function (req, res) {
 });
 //GET `*` - Should return the `index.html` file
 app.get("/", function (req, res) {
-  return res.sendFile(path.join(__dirname, "index.html"));
+  return res.sendFile(path.join(__dirname, "html.html"));
 });
 
 //GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON
@@ -28,7 +27,16 @@ app.get("/api/notes", function (req, res) {
   return res.json(notes);
 });
 
-//POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
+//Set up the js script
+app.get("/assets/js/index.js", function (req, res) {
+  res.sendFile(path.join(__dirname, "/assets/js/index.js"));
+});
+//Set up the styles.css
+app.get("/assets/css/styles.css", function (req, res) {
+  res.sendFile(path.join(__dirname, "/assets/js/styles.css"));
+});
+
+//  * POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post("/api/notes", function (req, res) {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
@@ -41,6 +49,7 @@ app.post("/api/notes", function (req, res) {
       }
     })
   );
+
   arrNote.push(newNote);
   console.log("arr", arrNote);
   console.log(newNote);
@@ -53,32 +62,9 @@ app.post("/api/notes", function (req, res) {
       }
     }
   );
-
-  // Using a RegEx Pattern to remove spaces from newCharacter
-  // newNote.note = newNote.id.replace(/\s+/g, "").toLowerCase();
-  //note key word came from index.js line 19: const saveNote = (note) =>
-
-  res.json(newNote);
 });
 
 //DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete. This means you'll need to find a way to give each note a unique `id` when it's saved. In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
-app.delete("api/notes/:id", function (req, res) {
-  fs.readFile("/db/db.json", "utf8", function (err, data) {
-    if (err) throw err;
-    const id = req.params.id;
-    const db = data;
-    for (let i = 0; i < db.length; i++) {
-      if (db[i].id === id) {
-        db = db.splice(i, 1);
-        return fs.writeFile("/db/db/json", db, function (err) {
-          if (err) throw err;
-          res.end();
-        });
-      }
-    }
-    res.end();
-  });
-});
 
 //Starts the server to begin listening
 app.listen(PORT, function () {
