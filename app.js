@@ -5,7 +5,7 @@ const fs = require("fs");
 const shortid = require("shortid");
 //Sets up the Express app
 const app = express();
-const PORT = process.env.port || 3000;
+const PORT = process.env.port || 3001;
 
 //Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
