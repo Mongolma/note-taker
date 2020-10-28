@@ -31,14 +31,14 @@ app.get("/api/notes", function (req, res) {
   return res.json(notes);
 });
 
-//Set up the js script
-app.get("/assets/js/index.js", function (req, res) {
-  res.sendFile(path.join(__dirname, "/assets/js/index.js"));
-});
-//Set up the styles.css
-app.get("/assets/css/styles.css", function (req, res) {
-  res.sendFile(path.join(__dirname, "/assets/js/styles.css"));
-});
+// //Set up the js script
+// app.get("/assets/js/index.js", function (req, res) {
+//   res.sendFile(path.join(__dirname, "/assets/js/index.js"));
+// });
+// //Set up the styles.css
+// app.get("/assets/css/styles.css", function (req, res) {
+//   res.sendFile(path.join(__dirname, "/assets/js/styles.css"));
+// });
 
 //  * POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post("/api/notes", function (req, res) {
@@ -51,7 +51,7 @@ app.post("/api/notes", function (req, res) {
     }
     const jsonData = JSON.parse(data);
     //Give each note a unique `id` when it's saved
-    newNote.id = jsonData.length + 1;
+    newNote.id = shortid.generate();
     jsonData.push(newNote);
 
     fs.writeFile(
@@ -68,7 +68,7 @@ app.post("/api/notes", function (req, res) {
 });
 
 //DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete. This means you'll need to find a way to give each note a unique `id` when it's saved. In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
-app.delete("/api/notes/:id", function (err, data) {
+app.delete("/api/notes/:id", function (req, res) {
   fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", function (
     err,
     data
@@ -79,11 +79,8 @@ app.delete("/api/notes/:id", function (err, data) {
     const id = parseInt(req.params.id);
     let db = JSON.parse(data);
     for (let i = 0; i < db.length; i++) {
-      if (db[i].is === id) {
+      if (db[i].id === id) {
         db.splice(i, 1);
-        for (let i = 0; i < db.length; i++) {
-          db[i].id = i + 1;
-        }
         return fs.writeFile(
           path.join(__dirname, "/db/db.json"),
           JSON.stringify(db),
@@ -91,7 +88,7 @@ app.delete("/api/notes/:id", function (err, data) {
             if (err) {
               throw err;
             }
-            res.end();
+            res.send("deleted");
           }
         );
       }
