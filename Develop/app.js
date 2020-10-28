@@ -11,18 +11,19 @@ let notes = require("./db/db.json");
 //Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("./public"));
+// app.use(express.static("./public"));
+const dir = __dirname + "/public";
 
 //Basic route that sends the user first to the AJAX page
 //GET `/notes` - Should return the `notes.html` file.
 app.get("/notes", function (req, res) {
   console.log(__dirname);
-  return res.sendFile(path.join(__dirname, "public", "notes.html"));
+  return res.sendFile(path.join(dir, "notes.html"));
 });
 //GET `*` - Should return the `index.html` file
 app.get("/", function (req, res) {
-  console.log(__dirname);
-  return res.sendFile(path.join(__dirname, "index.html"));
+  console.log("__dirname");
+  return res.sendFile(path.join(dir, "index.html"));
 });
 
 //GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON
