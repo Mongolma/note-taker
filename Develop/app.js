@@ -11,7 +11,7 @@ let notes = require("./db/db.json");
 //Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(express.static("./public"));
+app.use(express.static("./public/assets"));
 const dir = __dirname + "/public";
 
 //Basic route that sends the user first to the AJAX page
@@ -76,7 +76,7 @@ app.delete("/api/notes/:id", function (req, res) {
     if (err) {
       throw err;
     }
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     let db = JSON.parse(data);
     for (let i = 0; i < db.length; i++) {
       if (db[i].id === id) {
@@ -88,12 +88,11 @@ app.delete("/api/notes/:id", function (req, res) {
             if (err) {
               throw err;
             }
-            res.send("deleted");
+            res.send(db);
           }
         );
       }
     }
-    res.end();
   });
 });
 
