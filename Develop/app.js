@@ -6,7 +6,7 @@ const shortid = require("shortid");
 //Sets up the Express app
 const app = express();
 const PORT = 3003;
-let notes = require("./db/db.json");
+// let notes = require("./db/db.json");
 
 //Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -28,7 +28,13 @@ app.get("/", function (req, res) {
 
 //GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON
 app.get("/api/notes", function (req, res) {
-  return res.json(notes);
+  fs.readFile("./db/db.json", "utf8", function (err, data) {
+    if (err) {
+      throw err;
+    }
+    const jsonData = JSON.parse(data);
+    res.json(jsonData);
+  });
 });
 
 // //Set up the js script
