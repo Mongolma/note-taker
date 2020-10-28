@@ -4,12 +4,16 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-  "start": "node app",
-  "dev": "nodemon app"
+    "start": "node app",
+    "dev": "nodemon app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "shortid": "^2.2.16"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

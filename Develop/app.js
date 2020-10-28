@@ -2,6 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const shortid = require("shortid");
 //Sets up the Express app
 const app = express();
 const PORT = 3003;
@@ -15,11 +16,13 @@ app.use(express.static("./public"));
 //Basic route that sends the user first to the AJAX page
 //GET `/notes` - Should return the `notes.html` file.
 app.get("/notes", function (req, res) {
-  return res.sendFile(path.join(__dirname, "notes.html"));
+  console.log(__dirname);
+  return res.sendFile(path.join(__dirname, "public", "notes.html"));
 });
 //GET `*` - Should return the `index.html` file
 app.get("/", function (req, res) {
-  return res.sendFile(path.join(__dirname, "html.html"));
+  console.log(__dirname);
+  return res.sendFile(path.join(__dirname, "index.html"));
 });
 
 //GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON
@@ -46,6 +49,7 @@ app.post("/api/notes", function (req, res) {
       throw err;
     }
     const jsonData = JSON.parse(data);
+    //Give each note a unique `id` when it's saved
     newNote.id = jsonData.length + 1;
     jsonData.push(newNote);
 
@@ -56,7 +60,6 @@ app.post("/api/notes", function (req, res) {
         if (err) {
           throw err;
         }
-        res.json(data[data.length]);
         res.json(jsonData);
       }
     );
